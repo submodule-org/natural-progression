@@ -1,48 +1,46 @@
-function makeGetNextId(seed: number, algo: (n: number) => number) {
+import { combine, create, resolve, value } from "@submodule/core"
+
+const seed = value(0)
+const algo = value((n: number) => n + 1)
+
+const getNextId = create(({ seed, algo}) => {
   let current = seed
-  return function getNextId() {
+  return () => {
     current = algo(current)
     return current
   }
-}
+}, combine({
+  seed, algo
+}))
 
-function makeGetCurrentDate(date: Date) {
-  return function getCurrentDate() {
-    return date
-  }
-}
+const currentDate = create(() => new Date())
 
+const getCurrentDate = create((date) => {
+  return () => date
+}, currentDate)
 
-
-function create(gni: ReturnType<typeof makeGetNextId>, gcd: ReturnType<typeof makeGetCurrentDate>) { // 
-  const nextId = gni()
-  const createdDate = gcd()
+const make = create(({ getNextId, getCurrentDate }) => {
+  const nextId = getNextId()
+  const createdDate = getCurrentDate()
   // ....
-}
+}, combine({ getNextId, getCurrentDate }))
 
-function anotherCreate(gni: ReturnType<typeof makeGetNextId>) { //
-  const nextId = gni()
+const anotherCreate = create(({ getNextId }) => {
+  const nextId = getNextId()
   // ...
-}
+}, combine({ getNextId }))
 
-function anotherUseDate(gcd: ReturnType<typeof makeGetCurrentDate>) { //
-  const createdDate = gcd()
+const anotherUseDate = create(({ getCurrentDate }) => {
+  const createdDate = getCurrentDate()
   // ...
+}, combine({ getCurrentDate }))
+
+async function run() {
+  await resolve(make)
 }
 
-function run() {
-  const algo = (n: number) => n + 1
-  const gni = makeGetNextId(0, algo)
-  const gcd = makeGetCurrentDate(new Date())
-
-  create(gni, gcd)
-  anotherCreate(gni)
-  anotherUseDate(gcd)
-}
-
-function testAnotherCreate() {
-  const algo = (n: number) => n + 1
-  const gni = makeGetNextId(0, algo)
-
-  anotherCreate(gni)
+async function testAnotherCreate() {
+  anotherCreate.patch(algo, value(n => n * 2))
+  
+  await resolve(anotherCreate)
 }

@@ -1,0 +1,7 @@
+{
+  "name": "submodule-101",
+  "packageManager": "yarn@4.2.2",
+  "dependencies": {
+    "@submodule/core": "6.0.0-rc.1"
+  }
+}
