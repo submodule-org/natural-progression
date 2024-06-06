@@ -3,8 +3,16 @@ function getNextId() {
   return i++
 }
 
-function create() { // 
-  const nextId = getNextId()
-  const createdDate = new Date()
+function getCurrentDate() {
+  return new Date()
+}
+
+function create(gni: typeof getNextId, gcd: typeof getCurrentDate) { // 
+  const nextId = gni()
+  const createdDate = gcd()
   // ....
+}
+
+function run() {
+  create(getNextId, getCurrentDate)
 }
