@@ -1,18 +1,24 @@
-let i = 0
-function getNextId() {
-  return i++
+function makeGetNextId(seed: number) {
+  let _seed = seed
+  return function getNextId() {
+    return _seed++
+  }
 }
 
-function getCurrentDate() {
-  return new Date()
+function makeGetCurrentDate(date: Date) {
+  return function getCurrentDate() {
+    return date
+  }
 }
 
-function create(gni: typeof getNextId, gcd: typeof getCurrentDate) { // 
+
+
+function create(gni: ReturnType<typeof makeGetNextId>, gcd: ReturnType<typeof makeGetCurrentDate>) { // 
   const nextId = gni()
   const createdDate = gcd()
   // ....
 }
 
 function run() {
-  create(getNextId, getCurrentDate)
+  create(makeGetNextId(0), makeGetCurrentDate(new Date()))
 }
