@@ -1,7 +1,8 @@
-function makeGetNextId(seed: number) {
-  let _seed = seed
+function makeGetNextId(seed: number, algo: (n: number) => number) {
+  let current = seed
   return function getNextId() {
-    return _seed++
+    current = algo(current)
+    return current
   }
 }
 
@@ -30,10 +31,18 @@ function anotherUseDate(gcd: ReturnType<typeof makeGetCurrentDate>) { //
 }
 
 function run() {
-  const gni = makeGetNextId(0)
+  const algo = (n: number) => n + 1
+  const gni = makeGetNextId(0, algo)
   const gcd = makeGetCurrentDate(new Date())
 
   create(gni, gcd)
   anotherCreate(gni)
   anotherUseDate(gcd)
+}
+
+function testAnotherCreate() {
+  const algo = (n: number) => n + 1
+  const gni = makeGetNextId(0, algo)
+
+  anotherCreate(gni)
 }
