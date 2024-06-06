@@ -19,6 +19,21 @@ function create(gni: ReturnType<typeof makeGetNextId>, gcd: ReturnType<typeof ma
   // ....
 }
 
+function anotherCreate(gni: ReturnType<typeof makeGetNextId>) { //
+  const nextId = gni()
+  // ...
+}
+
+function anotherUseDate(gcd: ReturnType<typeof makeGetCurrentDate>) { //
+  const createdDate = gcd()
+  // ...
+}
+
 function run() {
-  create(makeGetNextId(0), makeGetCurrentDate(new Date()))
+  const gni = makeGetNextId(0)
+  const gcd = makeGetCurrentDate(new Date())
+
+  create(gni, gcd)
+  anotherCreate(gni)
+  anotherUseDate(gcd)
 }
